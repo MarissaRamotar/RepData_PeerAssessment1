@@ -8,6 +8,26 @@ output:
 
 ## Loading and preprocessing the data
 
+# Load Packages
+
+```{r}
+
+library(dplyr)
+library(ggplot2)
+
+```
+
+# Load data
+
+```{r echo = TRUE}
+# Reading in CSV data using readr package and read_csv function
+
+path <- file.path("activity", "activity.csv")
+
+activity <- readr::read_csv(file = path)
+
+```
+
 
 
 ## What is mean total number of steps taken per day?
