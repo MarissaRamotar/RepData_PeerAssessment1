@@ -28,6 +28,26 @@ activity <- readr::read_csv(file = path)
 
 ```
 
+<p>&nbsp;</p>
+#### Examining file 
+
+```{r echo=TRUE}
+str(activity)
+
+```
+
+<p>&nbsp;</p>
+#### Creating new file grouped by days across the two months and removing NA for this part of assignment.
+
+```{r echo=TRUE}
+
+Totalactivity <- activity %>% 
+group_by(date) %>% 
+  filter(!is.na(steps)) %>% 
+  summarise(totalsteps=sum(steps))
+
+```
+
 ## What is mean total number of steps taken per day?
 
 * Histogram showing total number of steps taken each day

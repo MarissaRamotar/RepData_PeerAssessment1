@@ -442,6 +442,34 @@ activity &lt;- readr::read_csv(file = path)</code></pre>
 ##   date = col_date(format = &quot;&quot;),
 ##   interval = col_double()
 ## )</code></pre>
+<p>
+ 
+</p>
+<div id="examining-file" class="section level4">
+<h4>Examining file</h4>
+<pre class="r"><code>str(activity)</code></pre>
+<pre><code>## tibble [17,568 x 3] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+##  $ steps   : num [1:17568] NA NA NA NA NA NA NA NA NA NA ...
+##  $ date    : Date[1:17568], format: &quot;2012-10-01&quot; &quot;2012-10-01&quot; ...
+##  $ interval: num [1:17568] 0 5 10 15 20 25 30 35 40 45 ...
+##  - attr(*, &quot;spec&quot;)=
+##   .. cols(
+##   ..   steps = col_double(),
+##   ..   date = col_date(format = &quot;&quot;),
+##   ..   interval = col_double()
+##   .. )</code></pre>
+<p>
+ 
+</p>
+</div>
+<div id="creating-new-file-grouped-by-days-across-the-two-months-and-removing-na-for-this-part-of-assignment." class="section level4">
+<h4>Creating new file grouped by days across the two months and removing NA for this part of assignment.</h4>
+<pre class="r"><code>Totalactivity &lt;- activity %&gt;% 
+group_by(date) %&gt;% 
+  filter(!is.na(steps)) %&gt;% 
+  summarise(totalsteps=sum(steps))</code></pre>
+<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
+</div>
 </div>
 </div>
 <div id="what-is-mean-total-number-of-steps-taken-per-day" class="section level2">

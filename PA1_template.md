@@ -56,6 +56,42 @@ activity <- readr::read_csv(file = path)
 ## )
 ```
 
+<p>&nbsp;</p>
+#### Examining file 
+
+
+```r
+str(activity)
+```
+
+```
+## tibble [17,568 x 3] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+##  $ steps   : num [1:17568] NA NA NA NA NA NA NA NA NA NA ...
+##  $ date    : Date[1:17568], format: "2012-10-01" "2012-10-01" ...
+##  $ interval: num [1:17568] 0 5 10 15 20 25 30 35 40 45 ...
+##  - attr(*, "spec")=
+##   .. cols(
+##   ..   steps = col_double(),
+##   ..   date = col_date(format = ""),
+##   ..   interval = col_double()
+##   .. )
+```
+
+<p>&nbsp;</p>
+#### Creating new file grouped by days across the two months and removing NA for this part of assignment.
+
+
+```r
+Totalactivity <- activity %>% 
+group_by(date) %>% 
+  filter(!is.na(steps)) %>% 
+  summarise(totalsteps=sum(steps))
+```
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
 ## What is mean total number of steps taken per day?
 
 * Histogram showing total number of steps taken each day
@@ -76,7 +112,7 @@ ggplot(mapping = aes(x = steps)) +
 ## Warning: Removed 2304 rows containing non-finite values (stat_bin).
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 
 ## What is the average daily activity pattern?
