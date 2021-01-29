@@ -132,7 +132,57 @@ The mean total number of steps per day was 10766 and the median total number of 
 
 ## What is the average daily activity pattern?
 
+<p>&nbsp;</p>
+* Time series plot of the 5-minute interval and the average number of steps taken.
 
+```r
+activity %>% 
+  group_by(interval) %>% 
+summarise(avgsteps = mean(steps, na.rm = TRUE)) %>% 
+  ggplot(mapping = aes(x=interval, y=avgsteps))+
+  geom_line(color="blue", size=0.7)+
+  labs(x ="Interval", y="Average number of steps taken")+
+  ggtitle("Plot showing Average Daily Activity Pattern")
+```
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+
+<p>&nbsp;</p>
+* The 5-minute interval, on average across all the days in the dataset, containing the maximum number of steps.
+
+
+```r
+activity %>% 
+  group_by(interval) %>% 
+summarise(avgsteps = mean(steps, na.rm = TRUE)) %>% 
+            arrange(desc(avgsteps))
+```
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+```
+## # A tibble: 288 x 2
+##    interval avgsteps
+##       <dbl>    <dbl>
+##  1      835     206.
+##  2      840     196.
+##  3      850     183.
+##  4      845     180.
+##  5      830     177.
+##  6      820     171.
+##  7      855     167.
+##  8      815     158.
+##  9      825     155.
+## 10      900     143.
+## # ... with 278 more rows
+```
+From the above, the 5-minute interval on average across all the days in the dataset, containing the maximum number of steps is the 835 interval.
 
 ## Imputing missing values
 
