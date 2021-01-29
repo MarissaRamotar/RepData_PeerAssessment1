@@ -50,6 +50,7 @@ group_by(date) %>%
 
 ## What is mean total number of steps taken per day?
 
+<p>&nbsp;</p>
 * Histogram showing total number of steps taken each day
 
 ```{r echo=TRUE}
@@ -61,6 +62,16 @@ ggplot(mapping = aes(x = totalsteps)) +
 
 ```
 
+
+<p>&nbsp;</p>
+* Mean and median total number of steps taken per day across the two month period is calculated below.
+```{r  echo=TRUE}
+Totalactivity %>% 
+  summarise(meansteps = mean(totalsteps), mediansteps = median(totalsteps))
+
+```
+
+The mean total number of steps per day was 10766 and the median total number of steps per day was 10765.
 
 ## What is the average daily activity pattern?
 
