@@ -98,18 +98,15 @@ group_by(date) %>%
 
 
 ```r
-activity %>% 
-ggplot(mapping = aes(x = steps)) +
+Totalactivity %>% 
+ggplot(mapping = aes(x = totalsteps)) +
   geom_histogram(fill = "blue")+
-  ggtitle("Total number of steps taken each day")
+  labs(x ="Total numbers of steps in a day", y="Count")+
+  ggtitle("History showing total number of steps taken each day")
 ```
 
 ```
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-```
-
-```
-## Warning: Removed 2304 rows containing non-finite values (stat_bin).
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->

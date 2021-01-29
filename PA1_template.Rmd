@@ -53,10 +53,11 @@ group_by(date) %>%
 * Histogram showing total number of steps taken each day
 
 ```{r echo=TRUE}
-activity %>% 
-ggplot(mapping = aes(x = steps)) +
+Totalactivity %>% 
+ggplot(mapping = aes(x = totalsteps)) +
   geom_histogram(fill = "blue")+
-  ggtitle("Total number of steps taken each day")
+  labs(x ="Total numbers of steps in a day", y="Count")+
+  ggtitle("History showing total number of steps taken each day")
 
 ```
 
