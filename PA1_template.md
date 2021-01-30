@@ -186,6 +186,53 @@ From the above, the 5-minute interval on average across all the days in the data
 
 ## Imputing missing values
 
+<p>&nbsp;</p>
+* Total number of missing values in the dataset
 
+
+```r
+summary(activity)
+```
+
+```
+##      steps             date               interval     
+##  Min.   :  0.00   Min.   :2012-10-01   Min.   :   0.0  
+##  1st Qu.:  0.00   1st Qu.:2012-10-16   1st Qu.: 588.8  
+##  Median :  0.00   Median :2012-10-31   Median :1177.5  
+##  Mean   : 37.38   Mean   :2012-10-31   Mean   :1177.5  
+##  3rd Qu.: 12.00   3rd Qu.:2012-11-15   3rd Qu.:1766.2  
+##  Max.   :806.00   Max.   :2012-11-30   Max.   :2355.0  
+##  NA's   :2304
+```
+
+
+The total number of rows with NAs are found in the steps field only and as seen as above consist of  2304 rows.
+
+<p>&nbsp;</p>
+
+* Strategy for filling in all of the missing values in the dataset. 
+
+
+```r
+imputedvalues<- activity %>%
+  filter(!is.na(steps)) %>% 
+  group_by(interval) %>% 
+summarise(avgsteps = mean(steps))            
+```
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+Assuming that the data are missing completely at random, mean imputation is the chosen method for filling in the missing values. The mean of each 5-minute intervals has been calculated above and NAs will be replaced by the corresponding mean.
+
+<p>&nbsp;</p>
+
+* New dataset that is equal to the original dataset but with the missing data filled in.
+
+
+```r
+activitynew <- left_join(x = activity, y = imputedvalues, by = "interval") %>% 
+  mutate(steps=ifelse(is.na(steps),avgsteps,steps))
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?
