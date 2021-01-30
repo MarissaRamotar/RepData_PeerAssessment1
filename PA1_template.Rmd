@@ -77,7 +77,7 @@ The mean total number of steps per day was 10766 and the median total number of 
 
 <p>&nbsp;</p>
 * Time series plot of the 5-minute interval and the average number of steps taken.
-```{r}
+```{r echo=TRUE}
 activity %>% 
   group_by(interval) %>% 
 summarise(avgsteps = mean(steps, na.rm = TRUE)) %>% 
@@ -93,7 +93,7 @@ summarise(avgsteps = mean(steps, na.rm = TRUE)) %>%
 <p>&nbsp;</p>
 * The 5-minute interval, on average across all the days in the dataset, containing the maximum number of steps.
 
-```{r}
+```{r echo=TRUE}
 activity %>% 
   group_by(interval) %>% 
 summarise(avgsteps = mean(steps, na.rm = TRUE)) %>% 
@@ -106,7 +106,7 @@ From the above, the 5-minute interval on average across all the days in the data
 <p>&nbsp;</p>
 * Total number of missing values in the dataset
 
-```{r}
+```{r echo=TRUE}
 summary(activity)
 
 ```
@@ -118,7 +118,7 @@ The total number of rows with NAs are found in the steps field only and as seen 
 
 * Strategy for filling in all of the missing values in the dataset. 
 
-```{r}
+```{r echo=TRUE}
 
 imputedvalues<- activity %>%
   filter(!is.na(steps)) %>% 
@@ -132,11 +132,42 @@ Assuming that the data are missing completely at random, mean imputation is the 
 
 * New dataset that is equal to the original dataset but with the missing data filled in.
 
-```{r}
+```{r echo=TRUE}
 
 activitynew <- left_join(x = activity, y = imputedvalues, by = "interval") %>% 
   mutate(steps = ifelse(is.na(steps),avgsteps,steps))
 
 ```
+
+
+<p>&nbsp;</p>
+* Histogram showing total number of steps taken each day for new dataset with imputed missing values
+
+```{r echo=TRUE}
+
+activitynew %>% 
+  group_by(date) %>% 
+  summarise(totalsteps=sum(steps)) %>% 
+ggplot(mapping = aes(x = totalsteps)) +
+  geom_histogram(fill = "blue")+
+  labs(x ="Total numbers of steps in a day", y="Count")+
+  ggtitle("History showing total number of steps taken each day")
+
+```
+
+
+<p>&nbsp;</p>
+* Mean and median total number of steps taken per day across the two month period is calculated below using new dataset with imputed missing values.
+
+```{r  echo=TRUE}
+
+activitynew %>% 
+  group_by(date) %>% 
+  summarise(totalsteps=sum(steps))%>% 
+  summarise(meansteps = mean(totalsteps), mediansteps = median(totalsteps)) 
+
+```
+
+The imputation of missing values using mean intervals does not appear to have much impact on the estimates for mean and median total number of daily steps. The mean total number of steps remained the same and the median number of steps only differ by one. It should be noted that the chosen method above is not very sophisticated and indeed perhaps another sophisticated method would probably have greater impact. Additionally, the method above assumes that the data is missing completely at random and if this assumption is false, biased estimates can result.   
 
 ## Are there differences in activity patterns between weekdays and weekends?

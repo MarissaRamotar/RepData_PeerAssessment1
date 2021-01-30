@@ -232,7 +232,57 @@ Assuming that the data are missing completely at random, mean imputation is the 
 
 ```r
 activitynew <- left_join(x = activity, y = imputedvalues, by = "interval") %>% 
-  mutate(steps=ifelse(is.na(steps),avgsteps,steps))
+  mutate(steps = ifelse(is.na(steps),avgsteps,steps))
 ```
+
+
+<p>&nbsp;</p>
+* Histogram showing total number of steps taken each day for new dataset with imputed missing values
+
+
+```r
+activitynew %>% 
+  group_by(date) %>% 
+  summarise(totalsteps=sum(steps)) %>% 
+ggplot(mapping = aes(x = totalsteps)) +
+  geom_histogram(fill = "blue")+
+  labs(x ="Total numbers of steps in a day", y="Count")+
+  ggtitle("History showing total number of steps taken each day")
+```
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+
+
+<p>&nbsp;</p>
+* Mean and median total number of steps taken per day across the two month period is calculated below using new dataset with imputed missing values.
+
+
+```r
+activitynew %>% 
+  group_by(date) %>% 
+  summarise(totalsteps=sum(steps))%>% 
+  summarise(meansteps = mean(totalsteps), mediansteps = median(totalsteps)) 
+```
+
+```
+## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+```
+## # A tibble: 1 x 2
+##   meansteps mediansteps
+##       <dbl>       <dbl>
+## 1    10766.      10766.
+```
+
+The imputation of missing values using mean intervals does not appear to have much impact on the estimates for mean and median total number of daily steps. The mean total number of steps remained the same and the median number of steps only differ by one. It should be noted that the chosen method above is not very sophisticated and indeed perhaps another sophisticated method would probably have greater impact. Additionally, the method above assumes that the data is missing completely at random and if this assumption is false, biased estimates can result.   
 
 ## Are there differences in activity patterns between weekdays and weekends?
