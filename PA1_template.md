@@ -151,6 +151,8 @@ summarise(avgsteps = mean(steps, na.rm = TRUE)) %>%
 
 ![](PA1_template_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 
+The average daily activity pattern shows that this person recorded a significantly higher average number of steps during a particular point of the day, that is between the 750 and 1000 time interval. This could perhaps be due to some form of exercise during this time slot.
+
 <p>&nbsp;</p>
 * The 5-minute interval, on average across all the days in the dataset, containing the maximum number of steps.
 
@@ -182,7 +184,7 @@ summarise(avgsteps = mean(steps, na.rm = TRUE)) %>%
 ## 10      900     143.
 ## # ... with 278 more rows
 ```
-From the above, the 5-minute interval on average across all the days in the dataset, containing the maximum number of steps is the 835 interval.
+From the above, the 5-minute interval on average across all the days in the dataset, containing the maximum number of steps is the 835 minute interval, consistent with time series plot above.
 
 ## Imputing missing values
 
@@ -206,7 +208,7 @@ summary(activity)
 ```
 
 
-The total number of rows with NAs are found in the steps field only and as seen as above consist of  2304 rows.
+The total number of rows with NAs are found in the `steps` field only and as seen as above consist of  2304 rows.
 
 <p>&nbsp;</p>
 
@@ -217,11 +219,27 @@ The total number of rows with NAs are found in the steps field only and as seen 
 imputedvalues<- activity %>%
   filter(!is.na(steps)) %>% 
   group_by(interval) %>% 
-summarise(avgsteps = mean(steps))            
+summarise(avgsteps = mean(steps)) 
 ```
 
 ```
 ## `summarise()` ungrouping output (override with `.groups` argument)
+```
+
+```r
+head(imputedvalues)
+```
+
+```
+## # A tibble: 6 x 2
+##   interval avgsteps
+##      <dbl>    <dbl>
+## 1        0   1.72  
+## 2        5   0.340 
+## 3       10   0.132 
+## 4       15   0.151 
+## 5       20   0.0755
+## 6       25   2.09
 ```
 Assuming that the data are missing completely at random, mean imputation is the chosen method for filling in the missing values. The mean of each 5-minute intervals has been calculated above and NAs will be replaced by the corresponding mean.
 
@@ -233,6 +251,19 @@ Assuming that the data are missing completely at random, mean imputation is the 
 ```r
 activitynew <- left_join(x = activity, y = imputedvalues, by = "interval") %>% 
   mutate(steps = ifelse(is.na(steps),avgsteps,steps))
+head(activitynew)
+```
+
+```
+## # A tibble: 6 x 4
+##    steps date       interval avgsteps
+##    <dbl> <date>        <dbl>    <dbl>
+## 1 1.72   2012-10-01        0   1.72  
+## 2 0.340  2012-10-01        5   0.340 
+## 3 0.132  2012-10-01       10   0.132 
+## 4 0.151  2012-10-01       15   0.151 
+## 5 0.0755 2012-10-01       20   0.0755
+## 6 2.09   2012-10-01       25   2.09
 ```
 
 
@@ -286,3 +317,47 @@ activitynew %>%
 The imputation of missing values using mean intervals does not appear to have much impact on the estimates for mean and median total number of daily steps. The mean total number of steps remained the same and the median number of steps only differ by one. It should be noted that the chosen method above is not very sophisticated and indeed perhaps another sophisticated method would probably have greater impact. Additionally, the method above assumes that the data is missing completely at random and if this assumption is false, biased estimates can result.   
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+<p>&nbsp;</p>
+* Creating new variable for days of the week using weekdays() function
+
+
+```r
+activitynew <- activitynew %>% 
+mutate(Days = weekdays(date))
+```
+
+<p>&nbsp;</p>
+* Creating new factor variable in the dataset with two levels 
+
+
+```r
+activitynew <- activitynew %>% 
+  mutate(typeofday = case_when(Days %in% c( "Saturday","Sunday")~"weekend",TRUE ~ "weekday"))
+```
+
+<p>&nbsp;</p>
+* Panel plot containing a time series plot of the
+5-minute interval and the average number of steps taken. 
+
+
+```r
+activitynew %>% 
+  group_by(typeofday, interval) %>% 
+summarise(newavgsteps = mean(steps)) %>% 
+    mutate(facet = factor(typeofday, levels = c("weekend", "weekday"))) %>%
+   ggplot(mapping = aes(x = interval, y = newavgsteps))+
+  geom_line(color="blue", size=0.7)+
+  labs(x ="Interval", y="Average number of steps taken")+
+  ggtitle("Plot showing Average Daily Activity Pattern by Weekend and Weekday") +
+   theme_bw() +
+   facet_wrap(~ facet, ncol = 1,) 
+```
+
+```
+## `summarise()` regrouping output by 'typeofday' (override with `.groups` argument)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+
+Based on the above panel time series plot, this person recorded a higher average number of steps on weekdays compared to weekends during the earlier part of the day, particularly between the 750 and 1000 time interval. However, on weekends, during the later time slots, that is, after the 1000 interval mark, this person on average records a greater number of steps than on weekdays.
